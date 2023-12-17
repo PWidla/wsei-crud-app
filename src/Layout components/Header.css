@@ -16,3 +16,12 @@ ul {
   display: flex;
   justify-content: space-around;
 }
+
+li {
+  font-size: large;
+}
+
+.active-entity {
+  font-weight: bolder;
+  color: burlywood;
+}
