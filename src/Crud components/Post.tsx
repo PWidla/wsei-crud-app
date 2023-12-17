@@ -6,7 +6,7 @@ interface Post {
   body: string;
 }
 
-const Posts: React.FC = () => {
+const Post: React.FC = () => {
   const posts: Post[] = [
     { id: 1, title: "Post 1", body: "Lorem ipsum..." },
     { id: 2, title: "Post 2", body: "Lorem ipsum..." },
@@ -28,4 +28,4 @@ const Posts: React.FC = () => {
   );
 };
 
-export default Posts;
+export default Post;
