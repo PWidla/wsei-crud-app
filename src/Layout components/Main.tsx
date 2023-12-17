@@ -1,5 +1,5 @@
-import Comments from "../Crud components/Comments";
-import Posts from "../Crud components/Posts";
+import Comment from "../Crud components/Comment";
+import Post from "../Crud components/Post";
 import "./Main.css";
 
 interface Props {
@@ -9,8 +9,8 @@ interface Props {
 function Main({ selectedEntity }: Props) {
   return (
     <div id="main">
-      {selectedEntity === "Posts" && <Posts />}
-      {selectedEntity === "Comments" && <Comments />}
+      {selectedEntity === "Posts" && <Post />}
+      {selectedEntity === "Comments" && <Comment />}
     </div>
   );
 }
