@@ -1,0 +1,13 @@
+.single-entity {
+  margin-bottom: 20px;
+  border: 1px solid black;
+}
+
+#entity-container {
+  padding-top: 200px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2em;
+}

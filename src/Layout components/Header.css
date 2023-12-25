@@ -17,8 +17,13 @@ ul {
   justify-content: space-around;
 }
 
-li {
+#header li {
   font-size: large;
+  cursor: pointer;
+}
+
+#header li:hover {
+  color: cornflowerblue;
 }
 
 .active-entity {
