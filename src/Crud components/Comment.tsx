@@ -32,6 +32,14 @@ function Comment() {
     );
   };
 
+  const handleReset = () => {
+    setFormData({
+      name: "",
+      email: "",
+      body: "",
+    });
+  };
+
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/comments")
       .then((response) => response.json())
@@ -42,33 +50,42 @@ function Comment() {
     <>
       <div id="create-form">
         <form onSubmit={handleSubmit}>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
+          <div className="form-field">
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
 
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
+          <div className="form-field">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
 
-          <label htmlFor="body">Body:</label>
-          <textarea
-            id="body"
-            name="body"
-            value={formData.body}
-            onChange={handleChange}
-          />
+          <div className="form-field">
+            <label htmlFor="body">Body:</label>
+            <textarea
+              id="body"
+              name="body"
+              value={formData.body}
+              onChange={handleChange}
+            />
+          </div>
 
           <button type="submit">Submit</button>
+          <button type="button" onClick={handleReset}>
+            Reset
+          </button>
         </form>
       </div>
 
