@@ -1,15 +1,16 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import { useUsers } from "../Common/Context";
 import { User } from "../Common/types";
 
 function Register() {
+  const { users, addUser } = useUsers();
+
   const [formData, setFormData] = useState({
     login: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-
-  const [users, setUsers] = useState<User[]>([]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -21,8 +22,8 @@ function Register() {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (!formData.email && !formData.email.trim()) {
-      console.log("podaj maila bucu");
+    if (!formData.email || !formData.email.trim()) {
+      console.log("Podaj maila bucu");
       return;
     }
 
@@ -48,8 +49,9 @@ function Register() {
       id: users.length + 1,
       ...formData,
     };
-    setUsers((prevUsers) => [...prevUsers, newUser]);
-    console.log("Utworzon");
+
+    addUser(newUser);
+    console.log("Utworzony:", newUser);
   };
 
   return (

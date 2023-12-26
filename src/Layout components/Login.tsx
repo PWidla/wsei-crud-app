@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import { useUsers } from "../Common/Context";
 import Register from "./Register";
 import "../Crud components style/Login.css";
 import { User } from "../Common/types";
@@ -10,6 +11,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
   });
 
   const [showRegister, setShowRegister] = useState(false);
+  const { users } = useUsers();
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -20,8 +22,18 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    onLogin(formData);
-    console.log("logged in succesfully");
+
+    const existingUser = users.find(
+      (user) =>
+        user.login === formData.login && user.password === formData.password
+    );
+
+    if (existingUser) {
+      onLogin(existingUser);
+      console.log("logged in successfully");
+    } else {
+      console.log("invalid login or password");
+    }
   };
 
   const handleToggleRegister = () => {

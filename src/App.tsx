@@ -4,6 +4,7 @@ import Header from "./Layout components/Header";
 import Main from "./Layout components/Main";
 import { User } from "./Common/types";
 import Login from "./Layout components/Login";
+import UsersProvider from "./Common/Context";
 
 function App() {
   let entities = ["Posts", "Comments"];
@@ -26,16 +27,18 @@ function App() {
   }, [loggedInUser]);
 
   return (
-    <>
-      {loggedInUser ? (
-        <>
-          <Header entities={entities} onSelectEntity={handleSelectEntity} />
-          <Main selectedEntity={selectedEntity} />
-        </>
-      ) : (
-        <Login onLogin={handleLogin} />
-      )}
-    </>
+    <UsersProvider>
+      <>
+        {loggedInUser ? (
+          <>
+            <Header entities={entities} onSelectEntity={handleSelectEntity} />
+            <Main selectedEntity={selectedEntity} />
+          </>
+        ) : (
+          <Login onLogin={handleLogin} />
+        )}
+      </>
+    </UsersProvider>
   );
 }
 
