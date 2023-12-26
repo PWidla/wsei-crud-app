@@ -48,17 +48,6 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
             </div>
 
             <div className="form-field">
-              <label htmlFor="email">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-field">
               <label htmlFor="password">Password:</label>
               <input
                 type="password"
