@@ -21,7 +21,7 @@ function App() {
 
   useEffect(() => {
     if (entities.length > 0) {
-      setSelectedEntity(entities[0]);
+      setSelectedEntity(entities[1]);
     }
   }, [loggedInUser]);
 
