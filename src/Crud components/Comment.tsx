@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import "../Crud components style/Entity.css";
 
 interface Comment {
