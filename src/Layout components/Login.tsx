@@ -1,12 +1,11 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import Register from "./Register";
 import "../Crud components style/Login.css";
-import { LoginData } from "../Common/types";
+import { User } from "../Common/types";
 
-function Login({ onLogin }: { onLogin: (user: LoginData) => void }) {
-  const [formData, setFormData] = useState<LoginData>({
-    name: "",
-    email: "",
+function Login({ onLogin }: { onLogin: (user: User) => void }) {
+  const [formData, setFormData] = useState<User>({
+    login: "",
     password: "",
   });
 
@@ -22,6 +21,7 @@ function Login({ onLogin }: { onLogin: (user: LoginData) => void }) {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     onLogin(formData);
+    console.log("logged in succesfully");
   };
 
   const handleToggleRegister = () => {
@@ -37,12 +37,12 @@ function Login({ onLogin }: { onLogin: (user: LoginData) => void }) {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="form-field">
-              <label htmlFor="name">Name:</label>
+              <label htmlFor="login">Login:</label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+                id="login"
+                name="login"
+                value={formData.login}
                 onChange={handleChange}
               />
             </div>

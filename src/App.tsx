@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Header from "./Layout components/Header";
 import Main from "./Layout components/Main";
-import { LoginData } from "./Common/types";
+import { User } from "./Common/types";
 import Login from "./Layout components/Login";
 
 function App() {
@@ -14,9 +14,9 @@ function App() {
     setSelectedEntity(entity);
   };
 
-  const [loggedInUser, setLoggedInUser] = useState<LoginData | null>(null); // Use LoginData
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
-  const handleLogin = (user: LoginData) => {
+  const handleLogin = (user: User) => {
     setLoggedInUser(user);
   };
 

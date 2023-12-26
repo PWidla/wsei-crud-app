@@ -1,6 +1,6 @@
-export interface LoginData {
+export interface User {
   id?: number;
-  name: string;
-  email: string;
+  login: string;
+  email?: string;
   password: string;
 }

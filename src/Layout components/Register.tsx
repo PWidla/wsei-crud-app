@@ -1,11 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-
-interface User {
-  id: number;
-  login: string;
-  email: string;
-  password: string;
-}
+import { User } from "../Common/types";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -26,6 +20,11 @@ function Register() {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+
+    if (!formData.email && !formData.email.trim()) {
+      console.log("podaj maila bucu");
+      return;
+    }
 
     const isLoginUnique = !users.some((user) => user.login === formData.login);
     const isEmailUnique = !users.some((user) => user.email === formData.email);
@@ -50,6 +49,7 @@ function Register() {
       ...formData,
     };
     setUsers((prevUsers) => [...prevUsers, newUser]);
+    console.log("Utworzon");
   };
 
   return (
