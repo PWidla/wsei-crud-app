@@ -10,7 +10,6 @@ interface Comment {
 }
 
 function Comment() {
-  console.log("sr");
   const [comments, setComments] = useState<Comment[]>([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -25,11 +24,32 @@ function Comment() {
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    alert(
-      `Name: ${formData.name}, Email: ${formData.email}, Body: ${formData.body}`
-    );
+
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/posts",
+        {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const newComment: Comment = await response.json();
+        setComments((prevComments) => [...prevComments, newComment]);
+
+        handleReset();
+      } else {
+        console.error("Failed to create a comment");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   const handleReset = () => {
@@ -88,6 +108,8 @@ function Comment() {
           </button>
         </form>
       </div>
+
+      <hr />
 
       <div id="entity-container">
         <h2>Existing comments</h2>
