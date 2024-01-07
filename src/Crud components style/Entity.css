@@ -34,6 +34,10 @@ button:hover::before {
   width: 100%;
 }
 
+#entity-container-heading {
+  height: 4vh;
+}
+
 .single-entity {
   margin-bottom: 20px;
   border: 1px solid black;
@@ -55,7 +59,7 @@ button:hover::before {
 
 h2 {
   text-align: center;
-  font-size: 1.3em;
+  font-size: 35px;
 }
 
 #create-form {

@@ -6,6 +6,7 @@ const MAX_POST_LENGTH = 220;
 const MIN_POSTS_PER_PAGE = 1;
 const postHeightInPixels = 60;
 const singleEntityMarginInPixels = 20;
+const contentContainerHeadingInPixels = 35;
 
 interface Post {
   userId: number;
@@ -23,9 +24,9 @@ function Post() {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(MIN_POSTS_PER_PAGE);
 
-  const headerRef = useRef<HTMLDivElement>(null);
   const createFormRef = useRef<HTMLDivElement>(null);
   const entityContainerRef = useRef<HTMLDivElement>(null);
+  const paginationContainerRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -95,16 +96,42 @@ function Post() {
   };
 
   const calculatePostsPerPage = () => {
-    const headerHeight = headerRef.current?.offsetHeight || 0;
+    const headerHeight = calculateHeaderHeight();
     const createFormHeight = createFormRef.current?.offsetHeight || 0;
-    const entityContainerHeight = entityContainerRef.current?.offsetHeight || 0;
+    const paginationContainerHeight =
+      paginationContainerRef.current?.offsetHeight || 0;
+
+    const createFormMargin = createFormRef.current
+      ? parseInt(window.getComputedStyle(createFormRef.current).marginBottom)
+      : 0;
+
+    const entityContainerMargin = entityContainerRef.current
+      ? parseInt(
+          window.getComputedStyle(entityContainerRef.current).marginBottom
+        )
+      : 0;
 
     const availableHeight =
       window.innerHeight -
       headerHeight -
       createFormHeight -
-      entityContainerHeight -
+      createFormMargin -
+      entityContainerMargin -
+      contentContainerHeadingInPixels -
+      paginationContainerHeight -
       singleEntityMarginInPixels;
+
+    console.log("headerHeight:", headerHeight);
+    console.log("createFormHeight:", createFormHeight);
+    console.log("createFormMargin:", createFormMargin);
+    console.log("entityContainerMargin:", entityContainerMargin);
+    console.log(
+      "contentContainerHeadingHeight:",
+      contentContainerHeadingInPixels
+    );
+    console.log("paginationContainerHeight:", paginationContainerHeight);
+    console.log("singleEntityMargin:", singleEntityMarginInPixels);
+    console.log("availableHeight:", availableHeight);
 
     const newPostsPerPage = Math.max(
       Math.floor(availableHeight / postHeightInPixels),
@@ -122,6 +149,23 @@ function Post() {
       window.removeEventListener("resize", calculatePostsPerPage);
     };
   }, []);
+
+  const calculateHeaderHeight = () => {
+    const headerElement = document.querySelector(
+      "#header"
+    ) as HTMLElement | null;
+    if (headerElement) {
+      const headerStyles = window.getComputedStyle(headerElement);
+      const headerHeight =
+        headerElement.offsetHeight +
+        parseInt(headerStyles.paddingTop) +
+        parseInt(headerStyles.paddingBottom);
+
+      return headerHeight;
+    }
+
+    return 0;
+  };
 
   const shortenContentIfNeeded = (content: string) => {
     return content.length > MAX_POST_LENGTH
@@ -176,7 +220,7 @@ function Post() {
           ))}
       </div>
 
-      <div ref={headerRef}>
+      <div id="pagination-container" ref={paginationContainerRef}>
         {Array.from({
           length: Math.ceil(posts.length / postsPerPage),
         }).map((_, index) => (
