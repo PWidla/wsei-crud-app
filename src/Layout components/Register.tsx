@@ -51,7 +51,6 @@ function Register() {
     };
 
     addUser(newUser);
-    console.log("Utworzony:", newUser);
   };
 
   return (

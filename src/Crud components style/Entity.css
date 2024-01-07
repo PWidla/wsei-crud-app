@@ -37,26 +37,44 @@ button:hover::before {
 .single-entity {
   margin-bottom: 20px;
   border: 1px solid black;
-  font-size: 0.3em;
+  overflow: hidden;
+}
+
+.single-entity > h3 {
+  font-size: 0.6em;
+}
+
+.single-entity > p {
+  font-size: 0.4em;
 }
 
 #entity-container {
-  padding-top: 20px;
+  padding-top: 0.5vh;
+  border-top: 1px solid black;
 }
 
 h2 {
   text-align: center;
-  font-size: 2em;
+  font-size: 1.3em;
 }
 
 #create-form {
   text-align: center;
+  margin-bottom: 0.5vh;
 }
 
 #create-form > * > * {
-  margin-top: 2em;
+  margin-top: 1em;
 }
 
 #create-form > * > button {
   margin: 1em 0 0 1em;
+}
+
+#create-form label {
+  font-size: 15px;
+}
+
+#create-form input {
+  font-size: 15px;
 }

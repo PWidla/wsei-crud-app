@@ -1,5 +1,11 @@
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 import "../Crud components style/Entity.css";
+import "../Crud components style/Post.css";
+
+const MAX_POST_LENGTH = 220;
+const MIN_POSTS_PER_PAGE = 1;
+const postHeightInPixels = 60;
+const singleEntityMarginInPixels = 20;
 
 interface Post {
   userId: number;
@@ -14,6 +20,12 @@ function Post() {
     title: "",
     body: "",
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(MIN_POSTS_PER_PAGE);
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const createFormRef = useRef<HTMLDivElement>(null);
+  const entityContainerRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -57,15 +69,69 @@ function Post() {
     });
   };
 
+  const fetchAllData = async () => {
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/posts"
+      );
+      if (response.ok) {
+        const newPosts: Post[] = await response.json();
+        setPosts(newPosts);
+      } else {
+        console.error("Failed to fetch posts");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => response.json())
-      .then((json) => setPosts(json as Post[]));
+    setPosts([]);
+    fetchAllData();
   }, []);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const calculatePostsPerPage = () => {
+    const headerHeight = headerRef.current?.offsetHeight || 0;
+    const createFormHeight = createFormRef.current?.offsetHeight || 0;
+    const entityContainerHeight = entityContainerRef.current?.offsetHeight || 0;
+
+    const availableHeight =
+      window.innerHeight -
+      headerHeight -
+      createFormHeight -
+      entityContainerHeight -
+      singleEntityMarginInPixels;
+
+    const newPostsPerPage = Math.max(
+      Math.floor(availableHeight / postHeightInPixels),
+      MIN_POSTS_PER_PAGE
+    );
+
+    setPostsPerPage(newPostsPerPage);
+  };
+
+  useEffect(() => {
+    calculatePostsPerPage();
+    window.addEventListener("resize", calculatePostsPerPage);
+
+    return () => {
+      window.removeEventListener("resize", calculatePostsPerPage);
+    };
+  }, []);
+
+  const shortenContentIfNeeded = (content: string) => {
+    return content.length > MAX_POST_LENGTH
+      ? content.slice(0, MAX_POST_LENGTH) + "..."
+      : content;
+  };
 
   return (
     <>
-      <div id="create-form">
+      <div id="create-form" ref={createFormRef}>
         <form onSubmit={handleSubmit}>
           <div className="form-field">
             <label htmlFor="title">Title:</label>
@@ -95,15 +161,32 @@ function Post() {
         </form>
       </div>
 
-      <hr />
-
-      <div id="entity-container">
+      <div id="entity-container" ref={entityContainerRef}>
         <h2>Existing posts</h2>
-        {posts.map((post) => (
-          <div key={post.id} className="single-entity">
-            <h3>{post.title}</h3>
-            <p>{post.body}</p>
-          </div>
+        {posts
+          .slice(
+            (currentPage - 1) * postsPerPage,
+            (currentPage - 1) * postsPerPage + postsPerPage
+          )
+          .map((post) => (
+            <div key={post.id} className="single-entity">
+              <h3>{shortenContentIfNeeded(post.title)}</h3>
+              <p>{shortenContentIfNeeded(post.body)}</p>
+            </div>
+          ))}
+      </div>
+
+      <div ref={headerRef}>
+        {Array.from({
+          length: Math.ceil(posts.length / postsPerPage),
+        }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            disabled={currentPage === index + 1}
+          >
+            {index + 1}
+          </button>
         ))}
       </div>
     </>
