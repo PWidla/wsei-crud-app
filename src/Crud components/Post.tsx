@@ -5,7 +5,6 @@ import "../Crud components style/Post.css";
 const MAX_POST_LENGTH = 220;
 const MIN_POSTS_PER_PAGE = 1;
 const postHeightInPixels = 60;
-const singleEntityMarginInPixels = 20;
 const contentContainerHeadingInPixels = 35;
 
 interface Post {
@@ -118,20 +117,7 @@ function Post() {
       createFormMargin -
       entityContainerMargin -
       contentContainerHeadingInPixels -
-      calculateVhToPixels(paginationContainerHeight) -
-      singleEntityMarginInPixels;
-
-    console.log("headerHeight:", headerHeight);
-    console.log("createFormHeight:", createFormHeight);
-    console.log("createFormMargin:", createFormMargin);
-    console.log("entityContainerMargin:", entityContainerMargin);
-    console.log(
-      "contentContainerHeadingHeight:",
-      contentContainerHeadingInPixels
-    );
-    console.log("paginationContainerHeight:", paginationContainerHeight);
-    console.log("singleEntityMargin:", singleEntityMarginInPixels);
-    console.log("availableHeight:", availableHeight);
+      calculateVhToPixels(paginationContainerHeight);
 
     const newPostsPerPage = Math.max(
       Math.floor(availableHeight / postHeightInPixels),
