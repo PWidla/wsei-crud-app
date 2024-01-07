@@ -118,7 +118,7 @@ function Post() {
       createFormMargin -
       entityContainerMargin -
       contentContainerHeadingInPixels -
-      paginationContainerHeight -
+      calculateVhToPixels(paginationContainerHeight) -
       singleEntityMarginInPixels;
 
     console.log("headerHeight:", headerHeight);
@@ -165,6 +165,11 @@ function Post() {
     }
 
     return 0;
+  };
+
+  const calculateVhToPixels = (vhValue: number): number => {
+    const windowHeight = window.innerHeight;
+    return (vhValue / 100) * windowHeight;
   };
 
   const shortenContentIfNeeded = (content: string) => {

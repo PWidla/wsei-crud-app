@@ -82,3 +82,8 @@ h2 {
 #create-form input {
   font-size: 15px;
 }
+
+#pagination-container {
+  text-align: center;
+  height: 2vh;
+}
