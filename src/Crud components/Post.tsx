@@ -22,6 +22,7 @@ function Post() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(MIN_POSTS_PER_PAGE);
+  const [isPostClicked, setIsPostClicked] = useState<number | null>(null);
 
   const createFormRef = useRef<HTMLDivElement>(null);
   const entityContainerRef = useRef<HTMLDivElement>(null);
@@ -164,6 +165,10 @@ function Post() {
       : content;
   };
 
+  const handleClickPost = (postId: number) => {
+    setIsPostClicked((prevPostId) => (prevPostId === postId ? null : postId));
+  };
+
   return (
     <>
       <div id="create-form" ref={createFormRef}>
@@ -204,7 +209,13 @@ function Post() {
             (currentPage - 1) * postsPerPage + postsPerPage
           )
           .map((post) => (
-            <div key={post.id} className="single-entity">
+            <div
+              key={post.id}
+              className={`single-entity ${
+                isPostClicked === post.id ? "selected-post" : ""
+              }`}
+              onClick={() => handleClickPost(post.id)}
+            >
               <h3>{shortenContentIfNeeded(post.title)}</h3>
               <p>{shortenContentIfNeeded(post.body)}</p>
             </div>
