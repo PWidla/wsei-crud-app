@@ -5,9 +5,6 @@ import UsersProvider, { useUsers } from "../Common/Context";
 import PostDetails from "./PostDetails";
 
 const MAX_POST_LENGTH = 220;
-const MIN_POSTS_PER_PAGE = 1;
-const postHeightInPixels = 60;
-const contentContainerHeadingInPixels = 35;
 
 interface Post {
   userId: number;
