@@ -24,13 +24,10 @@ function Post() {
     title: "",
     body: "",
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(MIN_POSTS_PER_PAGE);
   const [isPostClicked, setIsPostClicked] = useState<number | null>(null);
 
   const createFormRef = useRef<HTMLDivElement>(null);
   const entityContainerRef = useRef<HTMLDivElement>(null);
-  const paginationContainerRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -99,74 +96,6 @@ function Post() {
     fetchAllData();
   }, []);
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const calculatePostsPerPage = () => {
-    const headerHeight = calculateHeaderHeight();
-    const createFormHeight = createFormRef.current?.offsetHeight || 0;
-    const paginationContainerHeight =
-      paginationContainerRef.current?.offsetHeight || 0;
-
-    const createFormMargin = createFormRef.current
-      ? parseInt(window.getComputedStyle(createFormRef.current).marginBottom)
-      : 0;
-
-    const entityContainerMargin = entityContainerRef.current
-      ? parseInt(
-          window.getComputedStyle(entityContainerRef.current).marginBottom
-        )
-      : 0;
-
-    const availableHeight =
-      window.innerHeight -
-      headerHeight -
-      createFormHeight -
-      createFormMargin -
-      entityContainerMargin -
-      contentContainerHeadingInPixels -
-      calculateVhToPixels(paginationContainerHeight);
-
-    const newPostsPerPage = Math.max(
-      Math.floor(availableHeight / postHeightInPixels),
-      MIN_POSTS_PER_PAGE
-    );
-
-    setPostsPerPage(newPostsPerPage);
-  };
-
-  useEffect(() => {
-    calculatePostsPerPage();
-    window.addEventListener("resize", calculatePostsPerPage);
-
-    return () => {
-      window.removeEventListener("resize", calculatePostsPerPage);
-    };
-  }, []);
-
-  const calculateHeaderHeight = () => {
-    const headerElement = document.querySelector(
-      "#header"
-    ) as HTMLElement | null;
-    if (headerElement) {
-      const headerStyles = window.getComputedStyle(headerElement);
-      const headerHeight =
-        headerElement.offsetHeight +
-        parseInt(headerStyles.paddingTop) +
-        parseInt(headerStyles.paddingBottom);
-
-      return headerHeight;
-    }
-
-    return 0;
-  };
-
-  const calculateVhToPixels = (vhValue: number): number => {
-    const windowHeight = window.innerHeight;
-    return (vhValue / 100) * windowHeight;
-  };
-
   const shortenContentIfNeeded = (content: string) => {
     return content.length > MAX_POST_LENGTH
       ? content.slice(0, MAX_POST_LENGTH) + "..."
@@ -215,36 +144,17 @@ function Post() {
 
       <div id="entity-container" ref={entityContainerRef}>
         <h2>Existing posts</h2>
-        {posts
-          .slice(
-            (currentPage - 1) * postsPerPage,
-            (currentPage - 1) * postsPerPage + postsPerPage
-          )
-          .map((post) => (
-            <div
-              key={post.id}
-              className={`single-entity ${
-                isPostClicked === post.id ? "selected-post" : ""
-              }`}
-              onClick={() => handleClickPost(post.id)}
-            >
-              <h3>{shortenContentIfNeeded(post.title)}</h3>
-              <p>{shortenContentIfNeeded(post.body)}</p>
-            </div>
-          ))}
-      </div>
-
-      <div id="pagination-container" ref={paginationContainerRef}>
-        {Array.from({
-          length: Math.ceil(posts.length / postsPerPage),
-        }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            disabled={currentPage === index + 1}
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            className={`single-entity ${
+              isPostClicked === post.id ? "selected-post" : ""
+            }`}
+            onClick={() => handleClickPost(post.id)}
           >
-            {index + 1}
-          </button>
+            <h3>{shortenContentIfNeeded(post.title)}</h3>
+            <p>{shortenContentIfNeeded(post.body)}</p>
+          </div>
         ))}
       </div>
     </>
