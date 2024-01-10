@@ -1,6 +1,8 @@
 import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 import "../Crud components style/Entity.css";
 import "../Crud components style/Post.css";
+import UsersProvider from "../Common/Context";
+import PostDetails from "./PostDetails";
 
 const MAX_POST_LENGTH = 220;
 const MIN_POSTS_PER_PAGE = 1;
@@ -167,6 +169,10 @@ function Post() {
 
   const handleClickPost = (postId: number) => {
     setIsPostClicked((prevPostId) => (prevPostId === postId ? null : postId));
+
+    <UsersProvider>
+      {isPostClicked !== null && <PostDetails selectedPost={isPostClicked} />}
+    </UsersProvider>;
   };
 
   return (

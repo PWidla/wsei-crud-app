@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, useState } from "react";
-import { User } from "../Common/types";
+import { User } from "../Common/Types";
 
 interface UsersContextProps {
   users: User[];
