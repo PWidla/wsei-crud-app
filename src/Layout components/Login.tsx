@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useUsers } from "../Common/Context";
 import Register from "./Register";
 import "../Crud components style/Login.css";
-import { User } from "../Common/types";
+import { User } from "../Common/Types";
 
 function Login({ onLogin }: { onLogin: (user: User) => void }) {
   const [formData, setFormData] = useState<User>({

@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useUsers } from "../Common/Context";
-import { User } from "../Common/types";
+import { User } from "../Common/Types";
 
 function Register() {
   const { users, addUser } = useUsers();
