@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 import "../Crud components style/Entity.css";
 import "../Crud components style/Post.css";
-import UsersProvider from "../Common/Context";
+import UsersProvider, { useUsers } from "../Common/Context";
 import PostDetails from "./PostDetails";
 
 const MAX_POST_LENGTH = 220;
@@ -17,7 +17,10 @@ interface Post {
 }
 
 function Post() {
+  const { loggedInUser } = useUsers();
+
   const [posts, setPosts] = useState<Post[]>([]);
+  const [lastPostId, setLastPostId] = useState<number>(0);
   const [formData, setFormData] = useState({
     title: "",
     body: "",
@@ -39,13 +42,20 @@ function Post() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-
+    const loggedInUserId = loggedInUser ? loggedInUser.id : null;
+    console.log("userid " + loggedInUserId);
     try {
+      console.log(lastPostId);
       const response = await fetch(
         "https://jsonplaceholder.typicode.com/posts",
         {
           method: "POST",
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            userId: loggedInUserId,
+            id: lastPostId + 1,
+            title: formData.title,
+            body: formData.body,
+          }),
           headers: {
             "Content-type": "application/json; charset=UTF-8",
           },
@@ -55,7 +65,9 @@ function Post() {
       if (response.ok) {
         const newPost: Post = await response.json();
         setPosts((prevPosts) => [...prevPosts, newPost]);
-
+        setLastPostId(lastPostId + 1);
+        console.log(lastPostId + 1);
+        console.log(loggedInUser);
         handleReset();
       } else {
         console.error("Failed to create a post");
@@ -80,6 +92,7 @@ function Post() {
       if (response.ok) {
         const newPosts: Post[] = await response.json();
         setPosts(newPosts);
+        setLastPostId(newPosts[newPosts.length - 1].id);
       } else {
         console.error("Failed to fetch posts");
       }

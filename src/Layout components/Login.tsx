@@ -11,7 +11,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
   });
 
   const [showRegister, setShowRegister] = useState(false);
-  const { users } = useUsers();
+  const { users, setLoggedInUser } = useUsers();
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -30,7 +30,9 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
 
     if (existingUser) {
       onLogin(existingUser);
+      setLoggedInUser(existingUser);
       console.log("logged in successfully");
+      console.log(existingUser);
     } else {
       console.log("invalid login or password");
     }

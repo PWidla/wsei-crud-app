@@ -1,9 +1,11 @@
 import { createContext, useContext, ReactNode, useState } from "react";
-import { User } from "../Common/Types";
+import { User } from "./Types";
 
 interface UsersContextProps {
   users: User[];
+  loggedInUser: User | null;
   addUser: (user: User) => void;
+  setLoggedInUser: (user: User | null) => void;
 }
 
 const UsersContext = createContext<UsersContextProps | undefined>(undefined);
@@ -14,13 +16,16 @@ interface UsersProviderProps {
 
 function UsersProvider({ children }: UsersProviderProps) {
   const [users, setUsers] = useState<User[]>([]);
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
   const addUser = (user: User) => {
     setUsers((prevUsers) => [...prevUsers, user]);
   };
 
   return (
-    <UsersContext.Provider value={{ users, addUser }}>
+    <UsersContext.Provider
+      value={{ users, loggedInUser, addUser, setLoggedInUser }}
+    >
       {children}
     </UsersContext.Provider>
   );
