@@ -1,3 +1,4 @@
+import Album from "../Crud components/Album";
 import Comment from "../Crud components/Comment";
 import Post from "../Crud components/Post";
 import "./Main.css";
@@ -11,6 +12,7 @@ function Main({ selectedEntity }: Props) {
     <div id="main">
       {selectedEntity === "Posts" && <Post />}
       {selectedEntity === "Comments" && <Comment />}
+      {selectedEntity === "Albums" && <Album />}
     </div>
   );
 }
