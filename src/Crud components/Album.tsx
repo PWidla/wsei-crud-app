@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "../Crud components style/Entity.css"; // Dodaj odpowiedni plik stylów
+import "../Crud components style/Entity.css";
+import UsersProvider, { useUsers } from "../Common/Context";
 
 interface Album {
   userId: number;
@@ -16,6 +17,8 @@ interface Photo {
 }
 
 const Album = () => {
+  const { loggedInUser } = useUsers();
+
   const [albums, setAlbums] = useState<Album[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [formData, setFormData] = useState({
@@ -32,13 +35,15 @@ const Album = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
+    const loggedInUserId = loggedInUser ? loggedInUser.id : null;
+
     event.preventDefault();
     const response = await fetch(
       "https://jsonplaceholder.typicode.com/albums",
       {
         method: "POST",
         body: JSON.stringify({
-          userId: 1, // Ustaw domyślnego użytkownika, możesz dostosować to do swojej logiki
+          userId: loggedInUserId,
           title: formData.title,
         }),
         headers: {
