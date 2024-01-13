@@ -1,5 +1,4 @@
-import React from "react";
-import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "../Crud components style/Entity.css";
 import "../Crud components style/Post.css";
 import UsersProvider, { useUsers } from "../Common/Context";
@@ -13,10 +12,19 @@ interface Post {
   body: string;
 }
 
+interface Comment {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
 function Post() {
   const { loggedInUser } = useUsers();
 
   const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     body: "",
@@ -25,19 +33,19 @@ function Post() {
   });
   const [isPostClicked, setIsPostClicked] = useState<number | null>(null);
 
-  const createFormRef = useRef<HTMLDivElement>(null);
-  const entityContainerRef = useRef<HTMLDivElement>(null);
+  const createFormRef = React.useRef<HTMLDivElement>(null);
+  const entityContainerRef = React.useRef<HTMLDivElement>(null);
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     if (!formData.title.trim() || !formData.body.trim()) {
       alert("Title and body cannot be empty");
       return;
@@ -87,11 +95,9 @@ function Post() {
   }
 
   const handleSearch = async () => {
-    if(isNullOrEmpty(formData.postIdInput))
-    {
+    if (isNullOrEmpty(formData.postIdInput)) {
       alert("Search input is empty");
-    }
-    else{
+    } else {
       try {
         const response = await fetch(
           `https://jsonplaceholder.typicode.com/posts/${formData.postIdInput}`
@@ -100,6 +106,7 @@ function Post() {
         if (response.ok) {
           const post: Post = await response.json();
           setPosts([post]);
+          setComments([]); // Reset comments when searching for a single post
         } else {
           console.error("Failed to fetch the post");
         }
@@ -110,19 +117,18 @@ function Post() {
   };
 
   const handleSearchByUser = async () => {
-    if(isNullOrEmpty(formData.postIdInput))
-    {
+    if (isNullOrEmpty(formData.postIdInput)) {
       alert("Search input is empty");
-    }
-    else{
+    } else {
       try {
         const response = await fetch(
           `https://jsonplaceholder.typicode.com/posts?userId=${formData.userIdInput}`
         );
-  
+
         if (response.ok) {
           const posts: Post[] = await response.json();
           setPosts(posts);
+          setComments([]); // Reset comments when searching for posts by user
         } else {
           console.error("Failed to fetch posts");
         }
@@ -142,10 +148,30 @@ function Post() {
       );
 
       if (response.ok) {
-        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+        setPosts((prevPosts) =>
+          prevPosts.filter((post) => post.id !== postId)
+        );
+        setComments([]);
         setIsPostClicked(null);
       } else {
         console.error("Failed to delete the post");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
+  const fetchCommentsForPost = async (postId: number) => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/comments?postId=${postId}`
+      );
+
+      if (response.ok) {
+        const newComments: Comment[] = await response.json();
+        setComments(newComments);
+      } else {
+        console.error("Failed to fetch comments");
       }
     } catch (error) {
       alert(`Error: ${error}`);
@@ -170,6 +196,7 @@ function Post() {
 
   useEffect(() => {
     setPosts([]);
+    setComments([]);
     fetchAllData();
   }, []);
 
@@ -179,8 +206,14 @@ function Post() {
       : content;
   };
 
-  const handleClickPost = (postId: number) => {
-    setIsPostClicked((prevPostId) => (prevPostId === postId ? null : postId));
+  const handleClickPost = async (postId: number) => {
+    setIsPostClicked((prevPostId) =>
+      prevPostId === postId ? null : postId
+    );
+
+    if (isPostClicked !== postId) {
+      await fetchCommentsForPost(postId);
+    }
   };
 
   const handleUpdate = async (postId: number) => {
@@ -227,7 +260,7 @@ function Post() {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              required  
+              required
             />
           </div>
 
@@ -238,7 +271,7 @@ function Post() {
               name="body"
               value={formData.body}
               onChange={handleChange}
-              required  
+              required
             />
           </div>
 
@@ -290,7 +323,22 @@ function Post() {
             <h3>{shortenContentIfNeeded(post.title)}</h3>
             <p>{shortenContentIfNeeded(post.body)}</p>
             <button onClick={() => handleDelete(post.id)}>Delete</button>
-            <button onClick={() => handleUpdate(post.id)}>Update (with data in form)</button>
+            <button onClick={() => handleUpdate(post.id)}>
+              Update (with data in form)
+            </button>
+            {isPostClicked === post.id && (
+              <>
+                <h4>Comments:</h4>
+                {comments.map((comment) => (
+                  <div key={comment.id} className="comment-entity">
+                    <h1>{comment.name}</h1>
+                    <p>
+                      {comment.body}
+                    </p>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         ))}
       </div>
