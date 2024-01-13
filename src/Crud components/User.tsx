@@ -1,5 +1,6 @@
-import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
 import "../Crud components style/Entity.css";
+import "../Crud components style/User.css";
 import UsersProvider, { useUsers } from "../Common/Context";
 
 const MAX_USER_LENGTH = 60;
@@ -14,6 +15,7 @@ interface User {
   website: string;
   company: Company;
 }
+
 interface Address {
   street: string;
   suite: string;
@@ -88,6 +90,18 @@ function User() {
     });
   };
 
+  const handleUpdateUser = async (userId: number) => {
+    // Implementacja logiki aktualizacji użytkownika
+    // Możesz użyć fetch z metodą PUT do wysłania zaktualizowanych danych do API
+    console.log("Updating user with ID:", userId);
+  };
+
+  const handleDeleteUser = async (userId: number) => {
+    // Implementacja logiki usuwania użytkownika
+    // Możesz użyć fetch z metodą DELETE do usunięcia użytkownika z API
+    console.log("Deleting user with ID:", userId);
+  };
+
   const fetchAllData = async () => {
     try {
       const response = await fetch(
@@ -110,9 +124,10 @@ function User() {
   }, []);
 
   const shortenContentIfNeeded = (content: string) => {
-    return content.length > MAX_USER_LENGTH
-      ? content.slice(0, MAX_USER_LENGTH) + "..."
-      : content;
+    if (content && content.length > MAX_USER_LENGTH) {
+      return content.slice(0, MAX_USER_LENGTH) + "...";
+    }
+    return content;
   };
 
   const handleClickUser = (userId: number) => {
@@ -159,13 +174,23 @@ function User() {
         {users.map((user) => (
           <div
             key={user.id}
-            className={`single-entity ${
+            className={`single-entity single-user ${
               isUserClicked === user.id ? "selected-user" : ""
             }`}
             onClick={() => handleClickUser(user.id)}
           >
             <h3>{shortenContentIfNeeded(user.username)}</h3>
             <p>{shortenContentIfNeeded(user.email)}</p>
+            {isUserClicked === user.id && (
+              <>
+                <button onClick={() => handleUpdateUser(user.id)}>
+                  Update User
+                </button>
+                <button onClick={() => handleDeleteUser(user.id)}>
+                  Delete User
+                </button>
+              </>
+            )}
           </div>
         ))}
       </div>
