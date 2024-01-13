@@ -7,7 +7,8 @@ import Login from "./Layout components/Login";
 import UsersProvider from "./Common/Context";
 
 function App() {
-  let entities = ["Posts", "Comments", "Albums", "Users"];
+  // let entities = ["Posts", "Comments", "Albums", "Users"];
+  let entities = ["Posts", "Albums", "Users"];
 
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
