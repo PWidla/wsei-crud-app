@@ -5,4 +5,5 @@
 
 .selected-post {
   background-color: #e6f7ff;
+  min-height: 150px;
 }
