@@ -1,3 +1,4 @@
+import React from "react";
 import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 import "../Crud components style/Entity.css";
 import "../Crud components style/Post.css";
@@ -36,6 +37,12 @@ function Post() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    
+    if (!formData.title.trim() || !formData.body.trim()) {
+      alert("Title and body cannot be empty");
+      return;
+    }
+
     const loggedInUserId = loggedInUser ? loggedInUser.id : null;
 
     try {
@@ -75,40 +82,55 @@ function Post() {
     });
   };
 
-  const handleSearch = async () => {
-    try {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/${formData.postIdInput}`
-      );
+  function isNullOrEmpty(value: string | null | undefined): boolean {
+    return value === null || value === undefined || value.trim() === "";
+  }
 
-      if (response.ok) {
-        const post: Post = await response.json();
-        setPosts([post]);
-      } else {
-        console.error("Failed to fetch the post");
+  const handleSearch = async () => {
+    if(isNullOrEmpty(formData.postIdInput))
+    {
+      alert("Search input is empty");
+    }
+    else{
+      try {
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/posts/${formData.postIdInput}`
+        );
+
+        if (response.ok) {
+          const post: Post = await response.json();
+          setPosts([post]);
+        } else {
+          console.error("Failed to fetch the post");
+        }
+      } catch (error) {
+        alert(`Error: ${error}`);
       }
-    } catch (error) {
-      alert(`Error: ${error}`);
     }
   };
 
   const handleSearchByUser = async () => {
-    try {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts?userId=${formData.userIdInput}`
-      );
-
-      if (response.ok) {
-        const posts: Post[] = await response.json();
-        setPosts(posts);
-      } else {
-        console.error("Failed to fetch posts");
+    if(isNullOrEmpty(formData.postIdInput))
+    {
+      alert("Search input is empty");
+    }
+    else{
+      try {
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/posts?userId=${formData.userIdInput}`
+        );
+  
+        if (response.ok) {
+          const posts: Post[] = await response.json();
+          setPosts(posts);
+        } else {
+          console.error("Failed to fetch posts");
+        }
+      } catch (error) {
+        alert(`Error: ${error}`);
       }
-    } catch (error) {
-      alert(`Error: ${error}`);
     }
   };
-  
 
   const handleDelete = async (postId: number) => {
     try {
@@ -176,7 +198,7 @@ function Post() {
           },
         }
       );
-  
+
       if (response.ok) {
         const updatedPost: Post = await response.json();
         setPosts((prevPosts) =>
@@ -192,7 +214,6 @@ function Post() {
       alert(`Error: ${error}`);
     }
   };
-  
 
   return (
     <>
@@ -206,6 +227,7 @@ function Post() {
               name="title"
               value={formData.title}
               onChange={handleChange}
+              required  
             />
           </div>
 
@@ -216,6 +238,7 @@ function Post() {
               name="body"
               value={formData.body}
               onChange={handleChange}
+              required  
             />
           </div>
 
