@@ -11,7 +11,7 @@ function Header({ entities, onSelectEntity }: Props) {
 
   return (
     <div id="header">
-      <h1>crud knut</h1>
+      <h1>crud widla</h1>
       {entities.length === 0 ? <p>No entity found</p> : null}
       {entities.length === 0 && <p>No entity found</p>}
       <ul>
