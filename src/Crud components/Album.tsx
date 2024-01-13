@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../Crud components style/Entity.css";
+import "../Crud components style/Album.css";
 import UsersProvider, { useUsers } from "../Common/Context";
 
 interface Album {
@@ -25,6 +26,7 @@ const Album = () => {
     title: "",
   });
 
+  const [isAlbumClicked, setIsAlbumClicked] = useState<number | null>(null);
   const createFormRef = React.useRef<HTMLDivElement>(null);
 
   const handleChange = (
@@ -38,26 +40,36 @@ const Album = () => {
     const loggedInUserId = loggedInUser ? loggedInUser.id : null;
 
     event.preventDefault();
-    const response = await fetch(
-      "https://jsonplaceholder.typicode.com/albums",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          userId: loggedInUserId,
-          title: formData.title,
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      }
-    );
 
-    if (response.ok) {
-      const newAlbum: Album = await response.json();
-      setAlbums((prevAlbums) => [...prevAlbums, newAlbum]);
-      handleReset();
-    } else {
-      console.error("Failed to create an album");
+    if (!formData.title.trim()) {
+      alert("Album title cannot be empty");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/albums",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            userId: loggedInUserId,
+            title: formData.title,
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const newAlbum: Album = await response.json();
+        setAlbums((prevAlbums) => [...prevAlbums, newAlbum]);
+        handleReset();
+      } else {
+        console.error("Failed to create an album");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
     }
   };
 
@@ -84,6 +96,60 @@ const Album = () => {
     }
   };
 
+  const handleUpdate = async (albumId: number) => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/albums/${albumId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            title: formData.title,
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const updatedAlbum: Album = await response.json();
+        setAlbums((prevAlbums) =>
+          prevAlbums.map((album) =>
+            album.id === updatedAlbum.id ? updatedAlbum : album
+          )
+        );
+        handleReset();
+      } else {
+        console.error("Failed to update the album");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
+  const handleDelete = async (albumId: number) => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/albums/${albumId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setAlbums((prevAlbums) =>
+          prevAlbums.filter((album) => album.id !== albumId)
+        );
+        setPhotos([]); 
+        setIsAlbumClicked(null);
+      } else {
+        console.error("Failed to delete the album");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
   const fetchAllData = async () => {
     try {
       const response = await fetch(
@@ -93,7 +159,7 @@ const Album = () => {
         const newAlbums: Album[] = await response.json();
         setAlbums(newAlbums);
       } else {
-        console.error("Failed to fetch posts");
+        console.error("Failed to fetch albums");
       }
     } catch (error) {
       alert(`Error: ${error}`);
@@ -102,10 +168,13 @@ const Album = () => {
 
   useEffect(() => {
     setAlbums([]);
+    setPhotos([]);
     fetchAllData();
   }, []);
+
   const handleClickAlbum = (albumId: number) => {
-    fetchPhotosByAlbumId(albumId);
+    // fetchPhotosByAlbumId(albumId);
+    setIsAlbumClicked((prevAlbumId) => (prevAlbumId === albumId ? null : albumId));
   };
 
   return (
@@ -121,6 +190,7 @@ const Album = () => {
               value={formData.title}
               onChange={handleChange}
               maxLength={220}
+              required
             />
           </div>
 
@@ -136,10 +206,27 @@ const Album = () => {
         {albums.map((album) => (
           <div
             key={album.id}
-            className="single-entity"
+            className={`single-entity ${
+              isAlbumClicked === album.id ? "selected-album" : ""
+            }`}
             onClick={() => handleClickAlbum(album.id)}
           >
             <h3>{album.title}</h3>
+            <button onClick={() => handleClickAlbum(album.id)}>
+              Show Photos
+            </button>
+            <button onClick={() => handleUpdate(album.id)}>Update</button>
+            <button onClick={() => handleDelete(album.id)}>Delete</button>
+          </div>
+        ))}
+      </div>
+
+      <div id="entity-container">
+        <h2>Photos in the Selected Album</h2>
+        {photos.map((photo) => (
+          <div key={photo.id} className="single-entity">
+            <h3>{photo.title}</h3>
+            <img src={photo.thumbnailUrl} alt={photo.title} />
           </div>
         ))}
       </div>
