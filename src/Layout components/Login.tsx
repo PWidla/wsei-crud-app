@@ -34,7 +34,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
       console.log("logged in successfully");
       console.log(existingUser);
     } else {
-      console.log("invalid login or password");
+      alert("invalid login or password");
     }
   };
 
