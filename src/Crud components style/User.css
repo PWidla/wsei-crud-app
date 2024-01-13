@@ -1,3 +1,8 @@
 .single-user{
-    min-height: 90px;
+    min-height: 85px;
+}
+
+.selected-user{
+    min-height: 120px;
+    background-color: #e6f7ff;
 }
