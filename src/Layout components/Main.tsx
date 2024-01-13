@@ -12,7 +12,7 @@ function Main({ selectedEntity }: Props) {
   return (
     <div id="main">
       {selectedEntity === "Posts" && <Post />}
-      {selectedEntity === "Comments" && <Comment />}
+      {/* {selectedEntity === "Comments" && <Comment />} */}
       {selectedEntity === "Albums" && <Album />}
       {selectedEntity === "Users" && <User />}
     </div>
