@@ -19,11 +19,15 @@ function Register() {
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
+  function isNullOrEmpty(value: string | null | undefined): boolean {
+    return value === null || value === undefined || value.trim() === "";
+  }
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (!formData.email || !formData.email.trim()) {
-      console.log("Podaj maila bucu");
+    if (isNullOrEmpty(formData.login) || isNullOrEmpty(formData.email) || isNullOrEmpty(formData.password) || isNullOrEmpty(formData.confirmPassword) ){
+      alert("Fill all fields");
       return;
     }
 
