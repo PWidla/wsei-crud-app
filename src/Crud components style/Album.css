@@ -1,9 +1,10 @@
 .single-entity{
-    height: 50px;
+    max-height: 50px;
 }
 
 .selected-album{
-    height: 120px;
+    min-height: 120px;
+    background-color: #e6f7ff;
 }
 
 .photo-entity{
