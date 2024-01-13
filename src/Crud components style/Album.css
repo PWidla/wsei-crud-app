@@ -8,5 +8,5 @@
 }
 
 .photo-entity{
-    height: 250px;
+    min-height: 250px;
 }
