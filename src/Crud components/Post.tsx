@@ -19,7 +19,8 @@ function Post() {
   const [formData, setFormData] = useState({
     title: "",
     body: "",
-    idInput: "",
+    postIdInput: "",
+    userIdInput: "",
   });
   const [isPostClicked, setIsPostClicked] = useState<number | null>(null);
 
@@ -69,14 +70,15 @@ function Post() {
     setFormData({
       title: "",
       body: "",
-      idInput: "",
+      postIdInput: "",
+      userIdInput: "",
     });
   };
 
   const handleSearch = async () => {
     try {
       const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/${formData.idInput}`
+        `https://jsonplaceholder.typicode.com/posts/${formData.postIdInput}`
       );
 
       if (response.ok) {
@@ -89,6 +91,24 @@ function Post() {
       alert(`Error: ${error}`);
     }
   };
+
+  const handleSearchByUser = async () => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts?userId=${formData.userIdInput}`
+      );
+      
+      if (response.ok) {
+        const posts: Post[] = await response.json();
+        setPosts(posts);
+      } else {
+        console.error("Failed to fetch posts");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+  
 
   const handleDelete = async (postId: number) => {
     try {
@@ -173,15 +193,29 @@ function Post() {
         </form>
 
         <div id="searchContainer">
-          <label htmlFor="idInput">Post id:</label>
+          <label htmlFor="postIdInput">Post id:</label>
           <input
             type="text"
-            id="idInput"
-            name="idInput"
-            value={formData.idInput}
+            id="postIdInput"
+            name="postIdInput"
+            value={formData.postIdInput}
             onChange={handleChange}
           />
           <button type="button" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
+
+        <div id="searchContainer">
+          <label htmlFor="userIdInput">User id:</label>
+          <input
+            type="text"
+            id="userIdInput"
+            name="userIdInput"
+            value={formData.userIdInput}
+            onChange={handleChange}
+          />
+          <button type="button" onClick={handleSearchByUser}>
             Search
           </button>
         </div>
