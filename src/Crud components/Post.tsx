@@ -106,7 +106,7 @@ function Post() {
         if (response.ok) {
           const post: Post = await response.json();
           setPosts([post]);
-          setComments([]); // Reset comments when searching for a single post
+          setComments([]); 
         } else {
           console.error("Failed to fetch the post");
         }
