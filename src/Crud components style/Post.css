@@ -1,9 +1,22 @@
 .single-entity {
-  height: 60px;
+  height: 70px;
   text-align: center;
 }
 
 .selected-post {
   background-color: #e6f7ff;
-  min-height: 150px;
+  min-height: 70vh;
+  overflow: scroll;
+}
+
+.comment-entity{
+  padding-top: 1vh;
+}
+
+.comment-entity > h3 {
+  font-size: 0.6em;
+}
+
+.comment-entity > p {
+  font-size: 0.4em;
 }
