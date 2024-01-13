@@ -55,6 +55,7 @@ function Register() {
     };
 
     addUser(newUser);
+    alert("Account created successfully. Now you can log in");
   };
 
   return (
