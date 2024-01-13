@@ -40,7 +40,7 @@ function User() {
 
   const [users, setUsers] = useState<User[]>([]);
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     email: "",
   });
   const [isUserClicked, setIsUserClicked] = useState<number | null>(null);
@@ -85,21 +85,67 @@ function User() {
 
   const handleReset = () => {
     setFormData({
-      name: "",
+      username: "",
       email: "",
     });
   };
 
   const handleUpdateUser = async (userId: number) => {
-    // Implementacja logiki aktualizacji użytkownika
-    // Możesz użyć fetch z metodą PUT do wysłania zaktualizowanych danych do API
-    console.log("Updating user with ID:", userId);
+    const updatedUser: User = {
+      ...users.find((user) => user.id === userId)!,
+      username: formData.username,
+      email: formData.email,
+    };
+
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/users/${userId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify(updatedUser),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+
+      if (response.ok) {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === userId ? { ...user, ...updatedUser } : user
+          )
+        );
+        handleReset();
+        setIsUserClicked(null);
+      } else {
+        console.error("Failed to update the user");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   const handleDeleteUser = async (userId: number) => {
-    // Implementacja logiki usuwania użytkownika
-    // Możesz użyć fetch z metodą DELETE do usunięcia użytkownika z API
-    console.log("Deleting user with ID:", userId);
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/users/${userId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setUsers((prevUsers) =>
+          prevUsers.filter((user) => user.id !== userId)
+        );
+        handleReset();
+        setIsUserClicked(null);
+      } else {
+        console.error("Failed to delete the user");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   const fetchAllData = async () => {
@@ -139,12 +185,12 @@ function User() {
       <div id="create-form" ref={createFormRef}>
         <form onSubmit={handleSubmit}>
           <div className="form-field">
-            <label htmlFor="name">Name:</label>
+            <label htmlFor="username">Username:</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="username"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
               required
             />
