@@ -19,7 +19,7 @@ function Post() {
   const [formData, setFormData] = useState({
     title: "",
     body: "",
-    idInput: "", // Dodaj pole idInput do formData
+    idInput: "", 
   });
   const [isPostClicked, setIsPostClicked] = useState<number | null>(null);
 
@@ -69,7 +69,7 @@ function Post() {
     setFormData({
       title: "",
       body: "",
-      idInput: "", // Zresetuj także pole idInput
+      idInput: "", 
     });
   };
 
