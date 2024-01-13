@@ -173,7 +173,7 @@ const Album = () => {
   }, []);
 
   const handleClickAlbum = (albumId: number) => {
-    // fetchPhotosByAlbumId(albumId);
+    fetchPhotosByAlbumId(albumId);
     setIsAlbumClicked((prevAlbumId) => (prevAlbumId === albumId ? null : albumId));
   };
 
@@ -222,14 +222,14 @@ const Album = () => {
       </div>
 
       <div id="entity-container">
-        <h2>Photos in the Selected Album</h2>
-        {photos.map((photo) => (
-          <div key={photo.id} className="single-entity">
-            <h3>{photo.title}</h3>
-            <img src={photo.thumbnailUrl} alt={photo.title} />
-          </div>
-        ))}
-      </div>
+      <h2>Photos in the Selected Album</h2>
+      {photos.map((photo) => (
+        <div key={photo.id} className="single-entity photo-entity">
+          <h3>{photo.title}</h3>
+          <img src={photo.thumbnailUrl} alt={photo.title} />
+        </div>
+      ))}
+    </div>
     </>
   );
 };
