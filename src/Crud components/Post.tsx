@@ -128,7 +128,7 @@ function Post() {
         if (response.ok) {
           const posts: Post[] = await response.json();
           setPosts(posts);
-          setComments([]); // Reset comments when searching for posts by user
+          setComments([]);
         } else {
           console.error("Failed to fetch posts");
         }
