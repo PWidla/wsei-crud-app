@@ -19,7 +19,7 @@ function Post() {
   const [formData, setFormData] = useState({
     title: "",
     body: "",
-    idInput: "", 
+    idInput: "",
   });
   const [isPostClicked, setIsPostClicked] = useState<number | null>(null);
 
@@ -69,7 +69,7 @@ function Post() {
     setFormData({
       title: "",
       body: "",
-      idInput: "", 
+      idInput: "",
     });
   };
 
@@ -84,6 +84,26 @@ function Post() {
         setPosts([post]);
       } else {
         console.error("Failed to fetch the post");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+
+  const handleDelete = async (postId: number) => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${postId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+        setIsPostClicked(null);
+      } else {
+        console.error("Failed to delete the post");
       }
     } catch (error) {
       alert(`Error: ${error}`);
@@ -179,6 +199,7 @@ function Post() {
           >
             <h3>{shortenContentIfNeeded(post.title)}</h3>
             <p>{shortenContentIfNeeded(post.body)}</p>
+            <button onClick={() => handleDelete(post.id)}>Delete</button>
           </div>
         ))}
       </div>
