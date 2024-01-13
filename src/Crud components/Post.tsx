@@ -97,7 +97,7 @@ function Post() {
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/posts?userId=${formData.userIdInput}`
       );
-      
+
       if (response.ok) {
         const posts: Post[] = await response.json();
         setPosts(posts);
@@ -160,6 +160,39 @@ function Post() {
   const handleClickPost = (postId: number) => {
     setIsPostClicked((prevPostId) => (prevPostId === postId ? null : postId));
   };
+
+  const handleUpdate = async (postId: number) => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${postId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            title: formData.title,
+            body: formData.body,
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+  
+      if (response.ok) {
+        const updatedPost: Post = await response.json();
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === updatedPost.id ? updatedPost : post
+          )
+        );
+        handleReset();
+      } else {
+        console.error("Failed to update the post");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
+  
 
   return (
     <>
@@ -234,6 +267,7 @@ function Post() {
             <h3>{shortenContentIfNeeded(post.title)}</h3>
             <p>{shortenContentIfNeeded(post.body)}</p>
             <button onClick={() => handleDelete(post.id)}>Delete</button>
+            <button onClick={() => handleUpdate(post.id)}>Update (with data in form)</button>
           </div>
         ))}
       </div>
