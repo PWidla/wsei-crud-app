@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useState, useEffect, useRef } from "react";
 import "../Crud components style/Entity.css";
 import "../Crud components style/Post.css";
 import UsersProvider, { useUsers } from "../Common/Context";
-import PostDetails from "./PostDetails";
 
 const MAX_POST_LENGTH = 220;
 
@@ -20,6 +19,7 @@ function Post() {
   const [formData, setFormData] = useState({
     title: "",
     body: "",
+    idInput: "", // Dodaj pole idInput do formData
   });
   const [isPostClicked, setIsPostClicked] = useState<number | null>(null);
 
@@ -69,7 +69,25 @@ function Post() {
     setFormData({
       title: "",
       body: "",
+      idInput: "", // Zresetuj także pole idInput
     });
+  };
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${formData.idInput}`
+      );
+
+      if (response.ok) {
+        const post: Post = await response.json();
+        setPosts([post]);
+      } else {
+        console.error("Failed to fetch the post");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
   };
 
   const fetchAllData = async () => {
@@ -101,10 +119,6 @@ function Post() {
 
   const handleClickPost = (postId: number) => {
     setIsPostClicked((prevPostId) => (prevPostId === postId ? null : postId));
-
-    <UsersProvider>
-      {isPostClicked !== null && <PostDetails selectedPost={isPostClicked} />}
-    </UsersProvider>;
   };
 
   return (
@@ -137,6 +151,20 @@ function Post() {
             Reset
           </button>
         </form>
+
+        <div id="searchContainer">
+          <label htmlFor="idInput">Post id:</label>
+          <input
+            type="text"
+            id="idInput"
+            name="idInput"
+            value={formData.idInput}
+            onChange={handleChange}
+          />
+          <button type="button" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
       </div>
 
       <div id="entity-container" ref={entityContainerRef}>
